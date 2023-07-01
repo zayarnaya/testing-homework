@@ -16,5 +16,7 @@
         "compilerOptions": {
             "module": "CommonJS"
         }
-    }
+    },
+    "target": "esnext",
+    "module": "commonjs",
 }
