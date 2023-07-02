@@ -111,7 +111,7 @@ const shoppingCartEpic: ExampleEpic = (action$, store$, { cart }) => action$.pip
     tap(() => {
         if (process.env.BUG_ID !== '6') {
             cart.setState(store$.value.cart)
-        }
+        } 
     }),
     mergeMapTo(EMPTY),
 );
