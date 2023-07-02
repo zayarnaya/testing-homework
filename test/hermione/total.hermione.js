@@ -1,38 +1,39 @@
 const { assert } = require('chai');
+const axios = require('axios')
 
 const BUG_ID = process.env.BUG_ID ? `?bug_id=${process.env.BUG_ID}` : "";
+const respBUG = process.env.BUG_ID == 2 ? '?bug_id=2' : '';
 const baseUrl = 'http://localhost:3000/hw/store';
 
 describe('Сценарий покупки', async function() {
-    // it('проверяем отображение единичного товара', async function() {
 
-    //     await this.browser.url(`${baseUrl}/catalog/1${BUG_ID}`,  {timeout: 300});
-    //     await this.browser.assertView('product', '.Product', {
-    //         allowViewportOverflow: false,
-    //     });
-    // });
     it('проверяем процесс чекаута', async function() {
-
-        await this.browser.url(`${baseUrl}/catalog/0${BUG_ID}`,  {timeout: 300});
-        await this.browser.$('.ProductDetails-AddToCart').click();
-        await this.browser.pause(1000);
-        // await this.browser.$(".navbar-nav:nth-child(3)").click();
         await this.browser.url(`${baseUrl}/cart${BUG_ID}`,  {timeout: 300});
-        await this.browser.assertView('cart-with-product', '.Application', {
-            allowViewportOverflow: false,
-        });
+ 
+        const resp = await axios.post(`${baseUrl}/api/checkout${respBUG}`, { form: {
+            name: 'M0rty',
+            phone: '25872586234',
+            address: 'Punxatawny St',
+          }, cart: {
+            1: {
+                name: 'Fake#1',
+                price: 12,
+                count: 1,
+            },
+            2: {
+                name: 'Fake#2',
+                price: 56,
+                count: 3,
+            },
+            3: {
+                name: 'Fake#3',
+                price: 86,
+                count: 2,
+            }
+        } });
+        assert.equal(resp.status, 200);
+        assert.isBelow(resp.data.id, 50);
     });
 
-//     it('Полная корзина', async function() {
-// // а вот тут надо как-то замокать
-//         await this.browser.url('http://localhost:3000/hw/store/catalog',  {timeout: 300});
-//         await this.browser.assertView('medium', '.Application', {
-//             allowViewportOverflow: false,
-//             compositeImage: false,
-//             ignoreElements: [
-//                 '.card-body'
-//             ]
-//         });
-//     });
 });
 
