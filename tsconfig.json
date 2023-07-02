@@ -10,8 +10,9 @@
         "moduleResolution": "node"
     },
     "include": [
-        "src"
-    ],
+        "src",
+        "./jest-setup.ts",
+        "<rootDir>test/setupTests.ts" ],
     "ts-node": {
         "compilerOptions": {
             "module": "CommonJS"

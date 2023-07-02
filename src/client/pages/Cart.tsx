@@ -44,7 +44,7 @@ export const Cart: React.FC = () => {
         const total = Object.values(cart).reduce((sum, { count, price }) => sum + count * price, 0);
 
         content = (
-            <table className={bem('Table', ['table'])}>
+            <table data-testid='table' className={bem('Table', ['table'])}>
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -76,7 +76,7 @@ export const Cart: React.FC = () => {
     const actions = cartIsEmpty ? null : (
         <div className="row mb-4">
             <div className="col-6">
-                <button className={bem('Clear', ['btn', 'btn-outline-secondary'])} onClick={onClear}>Clear shopping cart</button>
+                <button data-testid='clearCart' className={bem('Clear', ['btn', 'btn-outline-secondary'])} onClick={onClear}>Clear shopping cart</button>
             </div>
         </div>
     );
@@ -95,7 +95,7 @@ export const Cart: React.FC = () => {
     const orderInfo = cartIsEmpty && latestOrderId ? (
         <div className="row my-2">
             <div className="col-12 col-sm-8 col-md-6">
-                <div className={bem('SuccessMessage', ['alert', alertClass])}>
+                <div data-testid='success' className={bem('SuccessMessage', ['alert', alertClass])}>
                     <h4 className="alert-heading">Well done!</h4>
                     <p>Order #<strong className={bem('Number')}>{latestOrderId}</strong> has been successfully completed.</p>
                     <hr/>
@@ -109,7 +109,7 @@ export const Cart: React.FC = () => {
         <div className={bem()}>
             <Helmet title="Shopping cart" />
             <div className="row mb-4">
-                <div className="col">
+                <div data-testid='content' className="col">
                     <h1>Shopping cart</h1>
                     {orderInfo}
                     {content}

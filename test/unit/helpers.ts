@@ -40,24 +40,24 @@
 
 // //   const mockApi = new ExampleApi('defg');
 // //   mockApi.getProducts = () => {
-// //     return [
-// //         {
-// //             id: 123,
-// //             name: 'Fake#1',
-// //             price: 12,
-// //         },
-// //         {
-// //             id: 1,
-// //             name: 'Fake#2',
-// //             price: 122,
-// //         },
-// //         {
-// //             id: 33,
-// //             name: 'Fake#3',
-// //             price: 458,
-// //         },
+    // return [
+    //     {
+    //         id: 123,
+    //         name: 'Fake#1',
+    //         price: 12,
+    //     },
+    //     {
+    //         id: 1,
+    //         name: 'Fake#2',
+    //         price: 122,
+    //     },
+    //     {
+    //         id: 33,
+    //         name: 'Fake#3',
+    //         price: 458,
+    //     },
 
-// //     ]
+    // ]
 // //   }
 
 // //   export class mockExampleApi extends ExampleApi {

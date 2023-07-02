@@ -15,6 +15,7 @@ export class ExampleApi {
     }
 
     async checkout(form: CheckoutFormData, cart: CartState) {
+        console.log('FFFFFFFFFF');
         return await axios.post<CheckoutResponse>(`${this.basename}/api/checkout`, { form, cart });
     }
 }

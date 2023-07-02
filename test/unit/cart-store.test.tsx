@@ -10,27 +10,37 @@ import { Application } from '../../src/client/Application';
 
 
 import { MemoryRouter } from "react-router";
-import { initStore } from "../../src/client/store";
-import { Provider } from "react-redux";
+import { addToCart, checkout, initStore } from "../../src/client/store";
+import { Provider, useDispatch } from "react-redux";
 import { CartApi, ExampleApi } from "../../src/client/api";
 import React from 'react'
 import { Cart } from "../../src/client/pages/Cart";
 import { CartState, CheckoutFormData, CheckoutResponse, Product, ProductShortInfo } from "../../src/common/types";
 import { AxiosResponse } from "axios";
+import { basename } from "path";
 // import { dummyCart } from "./helpers";
 jest.mock('../../src/client/api');
 jest.mocked(CartApi).mockImplementation(() => {
   return {getState: jest.fn<() => CartState>().mockReturnValue(dummyCart), setState: jest.fn()}
 });
-// jest.mocked(ExampleApi).mockImplementation(function() {
+// jest.mocked(ExampleApi).mockImplementation(() => {
 //   return {
-//     basename,
 //     getProducts: jest.fn<() => Promise<AxiosResponse<ProductShortInfo[], any>>>().mockResolvedValue(dummyResponce),
 //     getProductById: jest.fn<(id: number) => Promise<AxiosResponse<Product, any>>>().mockResolvedValue(dummyProduct),
 //     checkout: jest.fn<(form: CheckoutFormData, cart: CartState) => Promise<AxiosResponse<CheckoutResponse, any>>>().mockResolvedValue(dummyCheckout)
 //   }
 // })
-const dummyCart = {
+
+// jest.mocked(ExampleApi).mockImplementation();
+const mockedApi = ExampleApi as jest.Mocked<typeof ExampleApi>;
+// mockedApi.mockImplementation(() => {
+//   return {
+//     getProducts: jest.fn<() => Promise<AxiosResponse<ProductShortInfo[], any>>>().mockResolvedValue(dummyResponce),
+//     getProductById: jest.fn<(id: number) => Promise<AxiosResponse<Product, any>>>().mockResolvedValue(dummyProduct),
+//     checkout: jest.fn<(form: CheckoutFormData, cart: CartState) => Promise<AxiosResponse<CheckoutResponse, any>>>().mockResolvedValue(dummyCheckout)
+//   }
+// })
+export const dummyCart = {
       1: {
           name: 'Fake#1',
           price: 12,
@@ -47,7 +57,7 @@ const dummyCart = {
           count: 2,
       }
   }
-const dummyResponce: AxiosResponse<ProductShortInfo[], any> = {
+  export const dummyResponce: AxiosResponse<ProductShortInfo[], any> = {
   data: [
     {
         id: 123,
@@ -72,7 +82,7 @@ const dummyResponce: AxiosResponse<ProductShortInfo[], any> = {
   config: {}
 }
 
-const dummyProduct: AxiosResponse<Product, any> = {
+export const dummyProduct: AxiosResponse<Product, any> = {
   data: {
     description: 'фейк какой-то',
     material: 'шкура молодого дерматина',
@@ -88,7 +98,7 @@ const dummyProduct: AxiosResponse<Product, any> = {
   config: {}
 }
 
-const dummyCheckout: AxiosResponse<CheckoutResponse, any> = {
+export const dummyCheckout: AxiosResponse<CheckoutResponse, any> = {
   data: {
     id: 12
   },
@@ -97,41 +107,61 @@ const dummyCheckout: AxiosResponse<CheckoutResponse, any> = {
   headers: {},
   config: {}
 }
+export const dummyUser: CheckoutFormData = {
+  name: 'M0rty',
+  phone: '25872586234',
+  address: 'Punxatawny St',
+}
+// describe('Корзина и стор', async () => {
+  it('корзина правильно отображает товар', async () => {
+    const basename = 'http://localhost:3000/hw/store';
+    // const mockGetState = jest.fn().mockReturnValue(dummyCart);
+    const user = userEvent.setup()
 
-it('корзина правильно отображает товар', async () => {
-  const basename = 'http://localhost:3000/hw/store';
-  // const mockGetState = jest.fn().mockReturnValue(dummyCart);
-  const user = userEvent.setup()
+    const FakeDispatcher = () => {
+      const dispatch = useDispatch();
+      return <>
+      <button data-testid='add' onClick={() => dispatch(addToCart(    {description: 'фейк какой-то',
+    material: 'шкура молодого дерматина',
+    color: 'black',
+    id: 1,
+    name: 'Fake#2',
+    price: 122,}))}></button>
+      <button data-testid='dispatch' onClick={() => dispatch(checkout(dummyUser, dummyCart))}></button>
+      </>
+    }
+  
+    const cart = new CartApi;
+  
+    const api = new ExampleApi(basename);
+    // const cart = new CartApi();
+    const store = initStore(new mockedApi(''), cart);
+    
+    const cartPage = (
+  <MemoryRouter initialEntries={["/about"]} initialIndex={0}>
+  
+  
+            <Provider store={store}>
+                <Cart />
+                <FakeDispatcher />
+            </Provider>
+            </MemoryRouter>
+    );
+    const { container, getByTestId } = render(cartPage);
+    // const clearButton = getByTestId("clearCart");
 
-  const cart = new CartApi;
+    // expect(/Cart is empty/.test(getByTestId('content').innerHTML)).toBeTruthy();
+    // await user.click(getByTestId('add'));
+    // await user.click(getByTestId('dispatch'));
+    
 
-  const api = new ExampleApi(basename);
-  // const cart = new CartApi();
-  const store = initStore(api, cart);
-  console.log('STORE', store.getState());
-  const cartPage = (
-<MemoryRouter initialEntries={["/about"]} initialIndex={0}>
+    console.log(container.innerHTML)
+    // screen.logTestingPlaygroundURL();
+  // теперь вопрос нахрена это нужно
+    // expect(getByTestId("page-title").textContent).toEqual("About");
+  });
+// })
 
-
-          <Provider store={store}>
-              <Cart />
-          </Provider>
-          </MemoryRouter>
-  );
-
-  const { container, getByTestId } = render(cartPage);
-  expect(/Cart is empty/.test(getByTestId('content').innerHTML)).toBeFalsy();
-  const clearButton = getByTestId("clearCart");
-  console.log('STORE', store.getState());
-  await user.click(clearButton);
-  expect(/Cart is empty/.test(getByTestId('content').innerHTML)).toBeTruthy();
-
-
-  // console.log(container.innerHTML)
-  // screen.logTestingPlaygroundURL();
-// теперь вопрос нахрена это нужно
-  // expect(getByTestId("page-title").textContent).toEqual("About");
-});
 
 // it("если добавить элемент, он появляется в списке", async () => {
 //   const store = initStore();

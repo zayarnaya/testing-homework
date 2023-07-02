@@ -4,6 +4,7 @@ const BUG_ID = process.env.BUG_ID ? `?bug_id=${process.env.BUG_ID}` : "";
 const url = `http://localhost:3000/hw/store/catalog${BUG_ID}`;
 
 describe('Каталог', async function() {
+    // hermione.skip.notIn('chromecat', 'it should work only in Chrome');
     it('Каталог совпадает сам с собой', async function() {
 
         await this.browser.url(url,  {timeout: 300});
@@ -16,16 +17,16 @@ describe('Каталог', async function() {
             ]
         });
     });
-    it('Тут должно падать', async function() { // или нет? куда он имя-то отдает
+    it('Тут должно падать', async function() { // или нет? куда он имя-то отдает НЕ ПАДАЕТ
 
-        await this.browser.url('http://localhost:3000/hw/store/catalog?bug_id=1',  {timeout: 300});
+        await this.browser.url('http://localhost:3000/hw/store/catalog',  {timeout: 300});
         await this.browser.assertView('catalog-bugged', 'body', {
             allowViewportOverflow: false,
-            ignoreElements: [
-                '.ProductItem-Name',
-                '.ProductItem-Price',
-                '.ProductItem-DetailsLink'
-            ]
+            // ignoreElements: [
+            //     '.ProductItem-Name',
+            //     '.ProductItem-Price',
+            //     '.ProductItem-DetailsLink'
+            // ]
         });
     });
 

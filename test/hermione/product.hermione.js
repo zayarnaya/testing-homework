@@ -1,13 +1,24 @@
 const { assert } = require('chai');
 
 const BUG_ID = process.env.BUG_ID ? `?bug_id=${process.env.BUG_ID}` : "";
-const url = `http://localhost:3000/hw/store/catalog/0${BUG_ID}`;
+const url = `http://localhost:3000/hw/store/catalog/2${BUG_ID}`;
 
 describe('Страница продукта', async function() {
     it('Страница продукта совпадает сама с собой', async function() {
 
+        // await this.browser.url(`${baseUrl}/catalog/0${BUG_ID}`,  {timeout: 300});
+        // await this.browser.$('.ProductDetails-AddToCart').click();
+        // await this.browser.pause(1000);
+
         await this.browser.url(url,  {timeout: 300});
-        await this.browser.assertView('product', 'body', {
+        await this.browser.$('.ProductDetails-AddToCart').click();
+        await this.browser.pause(1000);
+        const link = await this.browser.$(".navbar-nav .nav-link:nth-child(4)");
+        // const href = await link.getAttribute("text");
+        // assert.equal(link, 'Cart');
+        const text = await JSON.stringify(link);
+        assert.isTrue(/Cart \(\d+?\)/.test(text), 'количество не изменилось');
+        await this.browser.assertView('product', '.Application', {
             allowViewportOverflow: false,
             ignoreElements: [
                 '.ProductDetails-Name',
